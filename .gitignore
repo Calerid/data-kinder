@@ -7,3 +7,6 @@
 *$py.class
 
 __pycache__/
+
+#Local workspace files
+datakinder.code-workspace
