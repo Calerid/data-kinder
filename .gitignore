@@ -1,0 +1,5 @@
+#Ignore the Virtual Environment
+.venv
+
+#Ignore all precompiled Python code
+*.pyc
