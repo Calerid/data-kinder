@@ -3,3 +3,7 @@
 
 #Ignore all precompiled Python code
 *.pyc
+*.py[cod]
+*$py.class
+
+__pycache__/
