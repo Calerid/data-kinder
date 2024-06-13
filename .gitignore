@@ -2,4 +2,4 @@
 .venv
 
 #Ignore all precompiled Python code
-*.pyc
+*.pycgit 
