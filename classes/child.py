@@ -95,8 +95,3 @@ class Child:
               parse(self.date)
         except:
               return "Invalid date"
-              
-
-        
-                
-          
