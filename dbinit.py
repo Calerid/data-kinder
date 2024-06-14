@@ -14,8 +14,8 @@ def create_tables(con):
         cursor = con.cursor()
         cursor.execute('''CREATE TABLE IF NOT EXISTS children(
             name TEXT,
-            gender TEXT, 
             birthdate DATE,
+            gender TEXT, 
             height FLOAT)''')
         con.commit()
     except sqlite3.Error as sqLiteError:
