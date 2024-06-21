@@ -1,4 +1,5 @@
 import os
+import datetime
 from dateutil.parser import parse
 from sqlalchemy import create_engine, Column, Integer, String, Float, Date
 from sqlalchemy.ext.declarative import declarative_base
@@ -22,7 +23,7 @@ class Child(Base):
         self.name = name
         self.birthdate = self.convert_birthdate(birthdate)
         self.gender = gender
-        self.height = self.height_conversion(height)  # Convert height to cm
+        self.height = height
         self.weight = weight
 
     def validate_child(self):
@@ -54,8 +55,8 @@ class Child(Base):
         print(f"1. Name: {self.name}")
         print(f"2. Birthdate: {self.birthdate}")
         print(f"3. Gender: {self.gender}")
-        print(f"4. Height: {self.height_cm} cm")
-        print(f"5. Weight: {self.weight_kg} kg")
+        print(f"4. Height: {self.height["feet"]} feet and {self.height["inches"]}")
+        print(f"5. Weight: {self.weight} lbs")
         print("6. Validate Child Data")
 
         edit_attribute = int(input("Select a value to update: "))
@@ -78,7 +79,6 @@ class Child(Base):
                 "feet": int(input("Please enter height in feet: ")),
                 "inches": int(input("Please enter height in inches: "))
             }
-            self.height_cm = self.height_conversion(self.height)
             self.edit_child()
         elif edit_attribute == 5:
             new_menu()
@@ -92,14 +92,20 @@ class Child(Base):
             print("Invalid selection")
             self.validate_child()
 
+    '''
     def convert_height(self, height):
         """Converts height from feet and inches to cm"""
         height_cm = (height["feet"] * 30.48) + (height["inches"] * 2.54)
         return height_cm
-    
-    def convert_birthdate(birthdate_str):
+    '''
+
+    def convert_birthdate(self, birthdate):
         """Convert birthdate string to a Python date object"""
-        return datetime.strptime(birthdate_str, '%Y-%m-%d').date()
+        try:
+            birthdate = datetime.datetime.strptime(birthdate, '%m/%d%y').date()
+            return birthdate
+        except ValueError as e:
+            print("Birthdate value not valid", e)
 
     def save_child(self):
         session.add(self)
