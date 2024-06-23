@@ -16,22 +16,24 @@ class Child(Base):
     name = Column(String, nullable=False)
     birthdate = Column(Date, nullable=False)
     gender = Column(String, nullable=False)
-    height_cm = Column(Float, nullable=False)
-    weight_kg = Column(Float, nullable=False)
+    height = Column(Float, nullable=False)
+    weight = Column(Float, nullable=False)
 
     def __init__(self, name, birthdate, gender, height, weight):
         self.name = name
-        self.birthdate = self.convert_birthdate(birthdate)
+        self.birthdate = birthdate
         self.gender = gender
         self.height = height
         self.weight = weight
 
     def validate_child(self):
         new_menu()
+        self.birthdate = self.convert_birthdate()
+        self.height = self.convert_height_inches()
         print(f"Your child's name is {self.name}.")
         print(f"{self.name} was born on {self.birthdate}.")
         print(f"{self.name} is {self.gender}.")
-        print(f"{self.name} is {self.height['feet']} feet and {self.height['inches']} inches tall")
+        print(f"{self.name} is {self.height} inches tall")
         print(f"{self.name} weighs {self.weight} lbs.")
         print("If this information is correct? type yes/no: ")
 
@@ -46,8 +48,8 @@ class Child(Base):
         print(self.name)
         print(self.birthdate)
         print(self.gender)
-        print(self.height_cm)
-        print(self.weight_kg)
+        print(self.height)
+        print(self.weight)
 
     def edit_child(self):
         new_menu()
@@ -55,7 +57,7 @@ class Child(Base):
         print(f"1. Name: {self.name}")
         print(f"2. Birthdate: {self.birthdate}")
         print(f"3. Gender: {self.gender}")
-        print(f"4. Height: {self.height["feet"]} feet and {self.height["inches"]}")
+        print(f"4. Height: {self.height} inches")
         print(f"5. Weight: {self.weight} lbs")
         print("6. Validate Child Data")
 
@@ -68,6 +70,7 @@ class Child(Base):
         elif edit_attribute == 2:
             new_menu()
             self.birthdate = input("Please enter your child's birthdate: ")
+            self.birthdate = self.convert_birthdate()
             self.edit_child()
         elif edit_attribute == 3:
             new_menu()
@@ -79,10 +82,11 @@ class Child(Base):
                 "feet": int(input("Please enter height in feet: ")),
                 "inches": int(input("Please enter height in inches: "))
             }
+            self.convert_height_inches()
             self.edit_child()
         elif edit_attribute == 5:
             new_menu()
-            self.weight_kg = float(input("Please enter your child's weight: "))
+            self.weight = float(input("Please enter your child's weight: "))
             self.edit_child()
         elif edit_attribute == 6:
             new_menu()
@@ -92,20 +96,33 @@ class Child(Base):
             print("Invalid selection")
             self.validate_child()
 
-    '''
-    def convert_height(self, height):
-        """Converts height from feet and inches to cm"""
-        height_cm = (height["feet"] * 30.48) + (height["inches"] * 2.54)
-        return height_cm
-    '''
-
-    def convert_birthdate(self, birthdate):
+    def convert_birthdate(self):
         """Convert birthdate string to a Python date object"""
         try:
-            birthdate = datetime.datetime.strptime(birthdate, '%m/%d%y').date()
-            return birthdate
+            self.birthdate = datetime.datetime.strptime(self.birthdate, '%m/%d/%y').date()
+            return self.birthdate
         except ValueError as e:
             print("Birthdate value not valid", e)
+
+    def convert_height_inches(self):
+        """Convert height into inches for database write.
+            Type: Float"""
+        if isinstance(self.height, float):
+            return self.height
+        else:
+            self.height = (float(self.height["feet"]) * 12) + float(self.height["inches"])
+            return self.height
+    
+    def convert_height_feet(self, height):
+        try:
+            self.height = {
+                "feet": int((height / 12)),
+                "inches":  int(height % 12)
+            }
+            return self.height
+        except ValueError as e:
+            print(e)    
+
 
     def save_child(self):
         session.add(self)
