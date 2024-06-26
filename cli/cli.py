@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import datetime
 
 sys.path.append("")	
 
@@ -72,8 +73,17 @@ def create_child():
 
         os.system('clear')
         print(data_kinder)
+        
+        convert_datetime(birthdate)
 
         new_child = Child(name, birthdate, gender, height, weight)
         Child.validate_child(new_child)
+
+        def convert_datetime(birthdate):
+            try:
+                birthdate = datetime.datetime.strptime(self.birthdate, '%m/%d/%y').date()
+                return birthdate
+            except ValueError as e:
+                print("Birthdate value not valid", e)
                
 cli()

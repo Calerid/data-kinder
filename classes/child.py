@@ -99,8 +99,8 @@ class Child(Base):
     def convert_birthdate(self):
         """Convert birthdate string to a Python date object"""
         try:
-            self.birthdate = datetime.datetime.strptime(self.birthdate, '%m/%d/%y').date()
-            return self.birthdate
+            birthdate = datetime.datetime.strptime(self.birthdate, '%m/%d/%y').date()
+            return birthdate
         except ValueError as e:
             print("Birthdate value not valid", e)
 
@@ -113,11 +113,11 @@ class Child(Base):
             self.height = (float(self.height["feet"]) * 12) + float(self.height["inches"])
             return self.height
     
-    def convert_height_feet(self, height):
+    def convert_height_feet(self):
         try:
             self.height = {
-                "feet": int((height / 12)),
-                "inches":  int(height % 12)
+                "feet": int((self.height / 12)),
+                "inches":  int(self.height % 12)
             }
             return self.height
         except ValueError as e:
